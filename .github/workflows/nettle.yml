@@ -1,0 +1,24 @@
+---
+name: nettle versions
+
+"on":
+  push:
+    branches:
+      - main
+      - devel
+  pull_request:
+
+
+jobs:
+  build:
+    name: latest nettle version
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install packages
+        run: sudo apt install build-essential g++
+      - name: build with nettle
+        run: |
+          ci/build_with_latest_nettle.sh
