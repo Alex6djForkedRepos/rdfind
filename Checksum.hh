@@ -12,6 +12,7 @@
 #include <nettle/md5.h>
 #include <nettle/sha1.h>
 #include <nettle/sha2.h>
+#include <nettle/version.h>
 
 #include "config.h"
 
