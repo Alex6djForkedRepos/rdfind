@@ -150,8 +150,12 @@ Checksum::printToBuffer(void* buffer, std::size_t N)
   switch (m_checksumtype) {
     case checksumtypes::SHA1:
       if (N >= SHA1_DIGEST_SIZE) {
+#if NETTLE_VERSION_MAJOR < 4
         sha1_digest(
           &m_state.sha1, SHA1_DIGEST_SIZE, static_cast<unsigned char*>(buffer));
+#else
+        sha1_digest(&m_state.sha1, static_cast<unsigned char*>(buffer));
+#endif
       } else {
         // bad size.
         return -1;
@@ -159,9 +163,13 @@ Checksum::printToBuffer(void* buffer, std::size_t N)
       break;
     case checksumtypes::SHA256:
       if (N >= SHA256_DIGEST_SIZE) {
+#if NETTLE_VERSION_MAJOR < 4
         sha256_digest(&m_state.sha256,
                       SHA256_DIGEST_SIZE,
                       static_cast<unsigned char*>(buffer));
+#else
+        sha256_digest(&m_state.sha256, static_cast<unsigned char*>(buffer));
+#endif
       } else {
         // bad size.
         return -1;
@@ -169,9 +177,13 @@ Checksum::printToBuffer(void* buffer, std::size_t N)
       break;
     case checksumtypes::SHA512:
       if (N >= SHA512_DIGEST_SIZE) {
+#if NETTLE_VERSION_MAJOR < 4
         sha512_digest(&m_state.sha512,
                       SHA512_DIGEST_SIZE,
                       static_cast<unsigned char*>(buffer));
+#else
+        sha512_digest(&m_state.sha512, static_cast<unsigned char*>(buffer));
+#endif
       } else {
         // bad size.
         return -1;
@@ -179,8 +191,12 @@ Checksum::printToBuffer(void* buffer, std::size_t N)
       break;
     case checksumtypes::MD5:
       if (N >= MD5_DIGEST_SIZE) {
+#if NETTLE_VERSION_MAJOR < 4
         md5_digest(
           &m_state.md5, MD5_DIGEST_SIZE, static_cast<unsigned char*>(buffer));
+#else
+        md5_digest(&m_state.md5, static_cast<unsigned char*>(buffer));
+#endif
       } else {
         // bad size.
         return -1;
