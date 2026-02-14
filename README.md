@@ -99,26 +99,41 @@ Rdfind uses the following algorithm. If N is the number of files to search throu
 
 ## Development
 
-### Building
-
 To build this utility, you need [nettle](https://www.lysator.liu.se/~nisse/nettle/) (on Debian based distros: `apt install nettle-dev`).
 
-### Install from source
+If xxhash is found on the system, rdfind is built with support for it (on Debian based distros: `apt install libxxhash-dev`).
 
-Here is how to get and install nettle from source. Please check for the current version before copying the instructions below:
+### Building from git sources
 
-    wget https://ftp.gnu.org/gnu/nettle/nettle-3.4.1.tar.gz
-    wget https://ftp.gnu.org/gnu/nettle/nettle-3.4.1.tar.gz.sig
-    gpg --recv-keys 28C67298                # omit if you do not want to verify
-    gpg --verify nettle-3.4.1.tar.gz{.sig,} # omit if you do not want to verify
-    tar -xf nettle-3.4.1.tar.gz
-    ./configure
-    make
-    sudo make install
+You need autoconf, libnettle and a compiler. On a Debian based distro this should be sufficient :
 
- If you install nettle as non-root, you must create a link in the rdfind directory so that rdfind later can do #include "nettle/nettle_header_files.h" correctly. Use for instance the commands
+```shell
+apt install build-essential autoconf nettle-dev libxxhash-dev
+```
 
-    ln -s nettle-1.14 nettle
+Then proceed with
+
+```shell
+./bootstrap.sh # requires autoconf being available
+./configure
+make           # builds
+make check     # runs the tests
+make install   # optional
+```
+
+### Building from a tarball
+
+This is done like building from git, except that autoconf is not needed and `./bootstrap.sh` should be omitted.
+
+### Building with cmake
+
+There is inofficial and incomplete cmake support. Testing is not yet added. Building with cmake can be done with:
+
+```shell
+cmake -B build-cmake -S inofficial_cmake/
+cmake --build build-cmake
+```
+
 
 ### Quality
 The following methods are used to maintain code quality:
