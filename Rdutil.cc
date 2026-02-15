@@ -19,7 +19,9 @@
 #include <thread>   //sleep
 
 // project
+#include "Checksum.hh"
 #include "Fileinfo.hh" //file container
+#include "Options.hh"
 #include "RdfindDebug.hh"
 
 // class declaration
@@ -542,16 +544,46 @@ Rdutil::saveablespace(std::ostream& out) const
 int
 Rdutil::fillwithbytes(enum Fileinfo::readtobuffermode type,
                       enum Fileinfo::readtobuffermode lasttype,
-                      const long nsecsleep,
-                      const std::size_t buffersize,
+                      const Options& options,
                       std::function<void(std::size_t)> progress_cb)
 {
   // first sort on inode (to read efficiently from the hard drive)
   sortOnDeviceAndInode();
 
-  const auto duration = std::chrono::nanoseconds{ nsecsleep };
+  // make a checksum object which can be reused to avoid creating an object
+  // per processed file
+  checksumtypes cktype{};
+  switch (type) {
+    case Fileinfo::readtobuffermode::READ_FIRST_BYTES:
+      cktype = options.checksum_for_firstlast_bytes;
+      break;
+    case Fileinfo::readtobuffermode::READ_LAST_BYTES:
+      cktype = options.checksum_for_firstlast_bytes;
+      break;
+    case Fileinfo::readtobuffermode::CREATE_XXH128_CHECKSUM:
+      cktype = checksumtypes::XXH128;
+      break;
+    case Fileinfo::readtobuffermode::CREATE_SHA1_CHECKSUM:
+      cktype = checksumtypes::SHA1;
+      break;
+    case Fileinfo::readtobuffermode::CREATE_SHA256_CHECKSUM:
+      cktype = checksumtypes::SHA256;
+      break;
+    case Fileinfo::readtobuffermode::CREATE_SHA512_CHECKSUM:
+      cktype = checksumtypes::SHA512;
+      break;
+    case Fileinfo::readtobuffermode::CREATE_MD5_CHECKSUM:
+      cktype = checksumtypes::MD5;
+      break;
+    default:
+      throw std::runtime_error("bad readtobuffermode");
+  }
 
-  std::vector<char> buffer(buffersize, '\0');
+  Checksum cksum(cktype);
+
+  const auto duration = std::chrono::nanoseconds{ options.nsecsleep };
+
+  std::vector<char> buffer(options.buffersize, '\0');
   std::size_t progress_count = 0;
 
   for (auto& elem : m_list) {
@@ -559,8 +591,8 @@ Rdutil::fillwithbytes(enum Fileinfo::readtobuffermode type,
       ++progress_count;
       progress_cb(progress_count);
     }
-    elem.fillwithbytes(type, lasttype, buffer);
-    if (nsecsleep > 0) {
+    elem.fillwithbytes(type, lasttype, buffer, cksum, options);
+    if (options.nsecsleep > 0) {
       std::this_thread::sleep_for(duration);
     }
   }

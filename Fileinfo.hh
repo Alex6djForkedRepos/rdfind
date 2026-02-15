@@ -15,6 +15,9 @@
 // os specific headers
 #include <sys/types.h> //for off_t and others.
 
+class Checksum;
+struct Options;
+
 /**
  Holds information about a file.
  Keeping this small is probably beneficial for performance, because the
@@ -143,7 +146,9 @@ public:
    */
   int fillwithbytes(enum readtobuffermode filltype,
                     enum readtobuffermode lasttype,
-                    std::vector<char>& buffer);
+                    std::vector<char>& buffer,
+                    Checksum& cksum,
+                    const Options& options);
 
   /// get a pointer to the bytes read from the file
   const char* getbyteptr() const { return m_somebytes.data(); }

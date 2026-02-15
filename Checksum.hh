@@ -20,23 +20,14 @@
 #include <xxhash.h>
 #endif
 
+#include "ChecksumTypes.hh"
+
 /**
  * class for checksum calculation
  */
 class Checksum
 {
 public:
-  // these are the checksums that can be calculated
-  enum class checksumtypes
-  {
-    NOTSET = 0,
-    MD5,
-    SHA1,
-    SHA256,
-    SHA512,
-    XXH128
-  };
-
   explicit Checksum(checksumtypes type);
   Checksum(const Checksum& other);
   Checksum(Checksum&& other);
@@ -44,6 +35,9 @@ public:
 
   int update(std::size_t length, const unsigned char* buffer);
   int update(std::size_t length, const char* buffer);
+
+  /// makes the object behave as if it was newly constructed
+  void reset();
 
 #if 0
   /// prints the checksum on stdout
@@ -56,6 +50,8 @@ public:
   // returns the number of bytes that the buffer needs to be
   // returns negative if something is wrong.
   [[gnu::pure]] int getDigestLength() const;
+
+  checksumtypes getType() const noexcept { return m_checksumtype; }
 
 private:
   // to know what type of checksum we are doing

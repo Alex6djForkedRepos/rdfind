@@ -24,6 +24,7 @@ add_library(
   rdfindimpl OBJECT
   ../Checksum.cc
   ../Checksum.hh
+  ../ChecksumTypes.hh
   ../CmdlineParser.cc
   ../CmdlineParser.hh
   ../Dirlist.cc
@@ -32,6 +33,8 @@ add_library(
   ../EasyRandom.hh
   ../Fileinfo.cc
   ../Fileinfo.hh
+  ../Options.cc
+  ../Options.hh
   ../RdfindDebug.hh
   ../Rdutil.cc
   ../Rdutil.hh
@@ -78,7 +81,8 @@ set(testscripts
     testcases/verify_maxfilesize_option.sh
     testcases/verify_nochecksum.sh
     testcases/verify_ranking.sh
-    testcases/verify_size_savings.sh)
+    testcases/verify_size_savings.sh
+    testcases/verify_skipfirstbytes.sh)
 
 foreach(testscript ${testscripts})
   cmake_path(GET testscript STEM testname)
