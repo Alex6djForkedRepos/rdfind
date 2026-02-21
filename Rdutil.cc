@@ -27,12 +27,17 @@
 // class declaration
 #include "Rdutil.hh"
 
+bool
+Rdutil::trywritetofile(const std::string& filename)
+{
+  return !!std::ofstream(filename);
+}
+
 int
 Rdutil::printtofile(const std::string& filename) const
 {
   // open a file to print to
-  std::ofstream f1;
-  f1.open(filename.c_str(), std::ios_base::out);
+  std::ofstream f1(filename);
   if (!f1.is_open()) {
     std::cerr << "could not open file \"" << filename << "\"\n";
     return -1;

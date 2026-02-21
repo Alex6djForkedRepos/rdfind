@@ -25,6 +25,13 @@ public:
   }
 
   /**
+   * opens the given file for writing and closes it again.
+   * @param filename
+   * @return true if it went ok
+   */
+  static bool trywritetofile(const std::string& filename);
+
+  /**
    * print file names to a file, with extra information.
    * @param filename
    * @return zero on success
