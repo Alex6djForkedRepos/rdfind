@@ -96,7 +96,7 @@ foreach(testscript ${testscripts})
 endforeach()
 
 if(Catch2_FOUND)
-  set(unittests test_checksum)
+  set(unittests test_checksum test_options)
   foreach(unittest ${unittests})
     add_executable(${unittest} ../unittests/${unittest}.cc)
     target_compile_features(${unittest} PRIVATE cxx_std_20)
