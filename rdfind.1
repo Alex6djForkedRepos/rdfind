@@ -134,9 +134,11 @@ Sleeps X milliseconds between reading each file, to reduce
 load. Default is 0 (no sleep). Note that only a few values are
 supported at present: 0,1-5,10,25,50,100 milliseconds.
 .TP
-.BR \-n ", " \-dryrun " " \fItrue\fR|\fIfalse\fR
-Displays what should have been done, don't actually delete or link
-anything. Default is false.
+.BR \-n ", " \-dryrun " " \fItrue\fR|\fI(false)\fR
+By default, rdfind does nothing except creating a results file.  In
+case one of the actions flags like -deleteduplicates is set, dryrun
+can be set to let rdfind print what it would do, instead of actually
+doing it. The default is false.
 .TP
 .BR \-h ", " \-help ", " \-\-help
 Displays a brief help message.
