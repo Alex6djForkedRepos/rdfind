@@ -1,5 +1,6 @@
 #include "config.h" //header file from autoconf, must come first to make large file support work properly
 
+#include <algorithm>
 #include <iostream>
 #include <limits>
 
@@ -106,7 +107,8 @@ parseOptions(Parser& parser)
       o.resultsfile = parser.get_parsed_string();
     } else if (parser.try_parse_bool("-ignoreempty")) {
       if (parser.get_parsed_bool()) {
-        o.minimumfilesize = 1;
+        o.minimumfilesize =
+          std::max(Fileinfo::filesizetype{ 1 }, o.minimumfilesize);
       } else {
         o.minimumfilesize = 0;
       }
