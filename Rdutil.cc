@@ -27,6 +27,12 @@
 // class declaration
 #include "Rdutil.hh"
 
+bool
+Rdutil::trywritetofile(const std::string& filename)
+{
+  return !!std::ofstream(filename);
+}
+
 int
 Rdutil::printtofile(const std::string& filename) const
 {

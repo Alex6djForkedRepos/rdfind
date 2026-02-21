@@ -91,6 +91,17 @@ main(int narg, const char* argv[])
   global_options = &o;
   dirlist.setcallbackfcn(&report);
 
+  if (o.makeresultsfile) {
+    // make sure the results file can be opened, before doing all potentially
+    // lengthy work. in case of permission problems, it is not fun to find out
+    // only after the fact. see https://github.com/pauldreik/rdfind/issues/128
+    if (!Rdutil::trywritetofile(o.resultsfile)) {
+      std::cerr << "could not write to results file \"" << o.resultsfile
+                << "\"\n";
+      std::exit(EXIT_FAILURE);
+    }
+  }
+
   // now loop over path list and add the files
 
   // done with arguments. start parsing files and directories!
