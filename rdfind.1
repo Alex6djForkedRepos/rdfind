@@ -191,6 +191,12 @@ Avoid manipulating the directories while rdfind is reading.
 rdfind is quite brittle in that case. Especially, when deleting
 or making links, rdfind can be subject to a symlink attack.
 Use with care!
+
+Rfind was written with the intention of deduplicating directories
+owned by the same user. It does not handle file ownership and
+permissions. It is not recommended to run it across directories with
+several owners.
+
 .SH AUTHOR
 Paul Dreik 2006-2025, reachable at rdfind@pauldreik.se
 Rdfind can be found at https://rdfind.pauldreik.se/
