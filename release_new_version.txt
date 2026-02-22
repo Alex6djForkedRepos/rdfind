@@ -5,8 +5,9 @@ VERSION.txt
 ChangeLog
 
 make a (signed) git tag:
-git config user.signingkey C9D9A0EA44EAE0EB
+git config user.signingkey CB203176838B7194
 git tag -s releases/$(cat VERSION.txt)
+git push origin releases/$(cat VERSION.txt)
 
 release a tar ball:
 git clean -xdf .
@@ -19,7 +20,7 @@ key=$(git config user.signingkey)
 pkg=rdfind-$(cat VERSION.txt).tar.gz
 gpg -u $key -a -b $pkg
 
-cat VERSION>table.txt
+cat VERSION.txt>table.txt
 git show-ref --hash=8 releases/$(cat VERSION.txt) >>table.txt
 echo $pkg >>table.txt
 echo $pkg.asc >>table.txt
