@@ -66,7 +66,8 @@ Fileinfo::fillwithbytes(enum readtobuffermode filltype,
     bytes_to_read = static_cast<std::streamsize>(options.last_bytes_size);
     if (filesize > bytes_to_read) {
       read_entire_file = false;
-      f1.seekg(-options.last_bytes_size, std::ios_base::end);
+      f1.seekg(-static_cast<std::ofstream::off_type>(options.last_bytes_size),
+               std::ios_base::end);
     }
   }
 
