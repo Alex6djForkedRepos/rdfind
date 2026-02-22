@@ -43,7 +43,66 @@ add_library(
 target_include_directories(rdfindimpl PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_include_directories(rdfindimpl PUBLIC ..)
 target_compile_features(rdfindimpl PUBLIC cxx_std_17)
-target_compile_options(rdfindimpl PUBLIC -Wall -Wextra -Wpedantic)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(
+    rdfindimpl
+    PUBLIC -Wall
+           -Wextra
+           -Wpedantic
+           -Wcast-align
+           -Wcast-align=strict
+           -Wcast-qual
+           -Wconversion
+           -Wdate-time
+           -Wdouble-promotion
+           -Wduplicated-branches
+           -Wduplicated-cond
+           -Wextra-semi
+           -Wformat=2
+           -Wlogical-op
+           -Wmisleading-indentation
+           -Wnon-virtual-dtor
+           -Wnull-dereference
+           -Wold-style-cast
+           -Woverloaded-virtual
+           -Wparentheses
+           -Wshadow
+           -Wsign-conversion
+           -Wsuggest-attribute=const
+           -Wsuggest-attribute=pure
+           -Wsuggest-final-methods
+           -Wsuggest-final-types
+           -Wsuggest-override
+           -Wunused
+           -Wuseless-cast
+           -Wzero-as-null-pointer-constant)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(
+    rdfindimpl
+    PUBLIC -Wall
+           -Wextra
+           -Wpedantic
+           -Wcast-align
+           -Wcast-qual
+           -Wconversion
+           -Wdate-time
+           -Wdouble-promotion
+           -Wextra-semi
+           -Wformat=2
+           -Wmisleading-indentation
+           -Wnon-virtual-dtor
+           -Wnull-dereference
+           -Wold-style-cast
+           -Woverloaded-virtual
+           -Wparentheses
+           -Wshadow
+           -Wsign-conversion
+           -Wsuggest-override
+           -Wunused
+           -Wzero-as-null-pointer-constant)
+else()
+
+endif()
 target_link_libraries(rdfindimpl nettle)
 if(xxhash_FOUND)
   target_link_libraries(rdfindimpl PkgConfig::xxhash)
