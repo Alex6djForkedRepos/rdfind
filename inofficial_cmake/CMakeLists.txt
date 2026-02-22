@@ -155,10 +155,24 @@ foreach(testscript ${testscripts})
 endforeach()
 
 if(Catch2_FOUND)
-  set(unittests test_checksum test_options)
-  foreach(unittest ${unittests})
-    add_executable(${unittest} ../unittests/${unittest}.cc)
-    target_compile_features(${unittest} PRIVATE cxx_std_20)
-    target_link_libraries(${unittest} PRIVATE rdfindimpl Catch2::Catch2WithMain)
-  endforeach()
+  # if Catch2 is built with a different standard library, we will get link
+  # errors. therefore, check that it actually works before adding unit tests.
+  # this makes it possible to build with libc++ when Catch2 is built with
+  # libstdc++
+  try_compile(
+    catch2_works SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../unittests/test_compile.cc
+    LINK_LIBRARIES Catch2::Catch2WithMain)
+
+  if(catch2_works)
+    set(unittests test_checksum test_options)
+    foreach(unittest ${unittests})
+      add_executable(${unittest} ../unittests/${unittest}.cc)
+      target_compile_features(${unittest} PRIVATE cxx_std_20)
+      target_link_libraries(${unittest} PRIVATE rdfindimpl
+                                                Catch2::Catch2WithMain)
+    endforeach()
+  else()
+    message(STATUS "catch2 found but could not be used")
+  endif()
 endif()
