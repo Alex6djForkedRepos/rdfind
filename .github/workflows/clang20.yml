@@ -10,8 +10,8 @@ name: clang 20
 
 
 jobs:
-  build:
-    name: Compiles with clang 20
+  automake:
+    name: Compiles with clang 20, using automake
     runs-on: ubuntu-24.04
 
     steps:
@@ -32,3 +32,32 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: '**/*.log'
+
+  cmake:
+    name: Compiles with clang 20, using cmake
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install packages
+        run: |
+          sudo apt install \
+            build-essential \
+            cmake \
+            nettle-dev \
+            libxxhash-dev \
+            catch2 \
+            time \
+            clang-20
+      - name: configure
+        run: |
+          cmake \
+            -B build \
+            -S inofficial_cmake/ \
+            -DCMAKE_COMPILE_WARNING_AS_ERROR=On \
+            -DCMAKE_CXX_COMPILER=clang++-20
+      - name: build
+        run: cmake --build build
+      - name: test
+        run: ctest --test-dir build --output-on-failure
