@@ -1,3 +1,18 @@
+2026-02-22 Paul Dreik <rdfind@pauldreik.se>
+	* release 1.8.0
+	* check that the resultsfile can be written to, before starting work
+	* fix bug when using minfilesize and ignoreempty at the same time
+	* control first and last byte size: -firstbytessize and -lastbytessize
+	* hash 4096 first/last bytes instead of comparing 64 during the first/last
+	  bytes step.
+	* optionally disable first/last byte reading
+	* optionally disable checksumming
+	* fix minor bug in dryrun output
+	* support building with nettle 4.0
+	* add progress option -progress
+	* polish the man page slightly
+	* building with cmake now runs the existing tests and newly written
+	  unit tests
 2025-02-03 Paul Dreik <rdfind@pauldreik.se>
         * release 1.7.0
 	* add xxh checksum for speed
