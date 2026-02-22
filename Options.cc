@@ -142,13 +142,13 @@ parseOptions(Parser& parser)
         throw std::runtime_error(
           "negative value of firstbytessize not allowed");
       }
-      o.first_bytes_size = tmp;
+      o.first_bytes_size = static_cast<decltype(o.first_bytes_size)>(tmp);
     } else if (parser.try_parse_string("-lastbytessize")) {
       const auto tmp = std::stoll(parser.get_parsed_string());
       if (tmp < 0) {
         throw std::runtime_error("negative value of lastbytessize not allowed");
       }
-      o.last_bytes_size = tmp;
+      o.last_bytes_size = static_cast<decltype(o.last_bytes_size)>(tmp);
     } else if (parser.try_parse_string("-checksum")) {
       if (parser.parsed_string_is("md5")) {
         o.usemd5 = true;

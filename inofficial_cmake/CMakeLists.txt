@@ -43,7 +43,66 @@ add_library(
 target_include_directories(rdfindimpl PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
 target_include_directories(rdfindimpl PUBLIC ..)
 target_compile_features(rdfindimpl PUBLIC cxx_std_17)
-target_compile_options(rdfindimpl PUBLIC -Wall -Wextra -Wpedantic)
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+  target_compile_options(
+    rdfindimpl
+    PUBLIC -Wall
+           -Wextra
+           -Wpedantic
+           -Wcast-align
+           -Wcast-align=strict
+           -Wcast-qual
+           -Wconversion
+           -Wdate-time
+           -Wdouble-promotion
+           -Wduplicated-branches
+           -Wduplicated-cond
+           -Wextra-semi
+           -Wformat=2
+           -Wlogical-op
+           -Wmisleading-indentation
+           -Wnon-virtual-dtor
+           -Wnull-dereference
+           -Wold-style-cast
+           -Woverloaded-virtual
+           -Wparentheses
+           -Wshadow
+           -Wsign-conversion
+           -Wsuggest-attribute=const
+           -Wsuggest-attribute=pure
+           -Wsuggest-final-methods
+           -Wsuggest-final-types
+           -Wsuggest-override
+           -Wunused
+           -Wuseless-cast
+           -Wzero-as-null-pointer-constant)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  target_compile_options(
+    rdfindimpl
+    PUBLIC -Wall
+           -Wextra
+           -Wpedantic
+           -Wcast-align
+           -Wcast-qual
+           -Wconversion
+           -Wdate-time
+           -Wdouble-promotion
+           -Wextra-semi
+           -Wformat=2
+           -Wmisleading-indentation
+           -Wnon-virtual-dtor
+           -Wnull-dereference
+           -Wold-style-cast
+           -Woverloaded-virtual
+           -Wparentheses
+           -Wshadow
+           -Wsign-conversion
+           -Wsuggest-override
+           -Wunused
+           -Wzero-as-null-pointer-constant)
+else()
+
+endif()
 target_link_libraries(rdfindimpl nettle)
 if(xxhash_FOUND)
   target_link_libraries(rdfindimpl PkgConfig::xxhash)
@@ -96,10 +155,24 @@ foreach(testscript ${testscripts})
 endforeach()
 
 if(Catch2_FOUND)
-  set(unittests test_checksum test_options)
-  foreach(unittest ${unittests})
-    add_executable(${unittest} ../unittests/${unittest}.cc)
-    target_compile_features(${unittest} PRIVATE cxx_std_20)
-    target_link_libraries(${unittest} PRIVATE rdfindimpl Catch2::Catch2WithMain)
-  endforeach()
+  # if Catch2 is built with a different standard library, we will get link
+  # errors. therefore, check that it actually works before adding unit tests.
+  # this makes it possible to build with libc++ when Catch2 is built with
+  # libstdc++
+  try_compile(
+    catch2_works SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/../unittests/test_compile.cc
+    LINK_LIBRARIES Catch2::Catch2WithMain)
+
+  if(catch2_works)
+    set(unittests test_checksum test_options)
+    foreach(unittest ${unittests})
+      add_executable(${unittest} ../unittests/${unittest}.cc)
+      target_compile_features(${unittest} PRIVATE cxx_std_20)
+      target_link_libraries(${unittest} PRIVATE rdfindimpl
+                                                Catch2::Catch2WithMain)
+    endforeach()
+  else()
+    message(STATUS "catch2 found but could not be used")
+  endif()
 endif()

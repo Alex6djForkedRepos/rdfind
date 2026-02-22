@@ -1,0 +1,31 @@
+---
+name: libc++
+
+"on":
+  push:
+    branches:
+      - main
+      - devel
+  pull_request:
+
+
+jobs:
+  build:
+    name: Compiles with clang and libc++
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      - name: install packages
+        run: |
+          sudo apt install \
+            build-essential \
+            nettle-dev \
+            libxxhash-dev \
+            catch2 \
+            time \
+            clang-20 \
+            libc++-20-dev
+      - name: build and test
+        run: ci/build_libc++.sh
